@@ -8,7 +8,7 @@ namespace Databsase.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class DatabaseController : ControllerBase
     {
         // GET api/values
         [HttpGet]
