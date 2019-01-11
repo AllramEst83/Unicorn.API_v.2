@@ -1,4 +1,7 @@
-﻿using Auth.API.Entities;
+﻿using Auth.API.Auth.API.Models;
+using Auth.API.Constants;
+using Auth.API.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -8,7 +11,6 @@ using System.Threading.Tasks;
 
 namespace Auth.API.Controllers
 {
-    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -18,25 +20,39 @@ namespace Auth.API.Controllers
         {
             _userService = userService;
         }
+        
 
-        //[AllowAnonymous]
         [HttpPost("authenticate")]
         public ActionResult Authenticate([FromBody] UnicornUser userParam)
         {
-            UnicornUser user = _userService.Authenticate(userParam.Username, userParam.Password);
-
-            if (user == null)
+            AuthAPIUser _user = _userService.Auth(userParam);
+            if (_user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
-            _userService.DecryptToken(user.Token);
 
-            return Ok(user);
+            return Ok(_user);
         }
 
-
-        [HttpGet("getall")]
-        public ActionResult GetAll()
+        [HttpPost("validate")]
+        public ActionResult Validate([FromBody] UserValidation validation)
         {
+            var response = _userService.DecodeToken(validation.Token);
+            if (response.IsAuthenticated == false)
+                return BadRequest(response);
+
+
+            return Ok(response);
+        }
+
+        [HttpPost("getall")]
+        public ActionResult GetAll([FromBody] AuthAPIUser requestUser)
+        {
+            UserClaimsModel response = _userService.DecodeToken(requestUser.Token);
+            if (!_userService.UserExistsWithRole(AuthServiceConstants.Admin ,response))
+            {
+                return BadRequest(new { message = "You do not have permission to access this content" });
+            }
+
             var users = _userService.GetAll();
             return Ok(users);
         }

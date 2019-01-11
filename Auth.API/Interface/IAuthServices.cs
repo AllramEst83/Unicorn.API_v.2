@@ -1,4 +1,5 @@
-﻿using Auth.API.Entities;
+﻿using Auth.API.Auth.API.Models;
+using Auth.API.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,9 @@ namespace Auth.API
 {
     public interface IAuthServices
     {
-        UnicornUser Authenticate(string username, string password);
         IEnumerable<object> GetAll();
-        void DecryptToken(string token);
+        AuthAPIUser Auth(UnicornUser _user);
+        UserClaimsModel DecodeToken(string tokenString);
+        bool UserExistsWithRole(string mustHaveRole, UserClaimsModel requestUser);
     }
 }

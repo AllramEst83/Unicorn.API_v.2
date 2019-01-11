@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Auth.API.Auth.API.Models;
 using Auth.API.Entities.Context;
 
 namespace Auth.API.Entities.Seeder
@@ -22,8 +23,18 @@ namespace Auth.API.Entities.Seeder
                     FirstName = "Allram",
                     LastName = "Eest",
                     Password = "AssWipe",
-                    Token = "",
-                    Username ="AllramEst"
+                    Email ="AllramEst@altavista.com",
+                    Username ="AllramEst",
+                    Role = Roles.Admin
+                },
+                new UnicornUser
+                {
+                    FirstName = "Kurre",
+                    LastName = "Kulla",
+                    Password = "ButtCrack",
+                    Email ="KurreCola@altavista.com",
+                    Username ="KurreKalle",
+                    Role = Roles.User
                 }
             };
 

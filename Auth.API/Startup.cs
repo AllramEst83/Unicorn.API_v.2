@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Auth.API.Auth.API.Models;
 using Auth.API.Constants;
+using Auth.API.Entities;
 using Auth.API.Entities.Context;
 using Auth.API.Entities.Seeder;
 using Auth.API.Helpers;
 using Auth.API.Services;
+using Databsase.API.Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -57,14 +60,19 @@ namespace Auth.API
             {
                 jwtConfig.RequireHttpsMetadata = false;
                 jwtConfig.SaveToken = true;
+                jwtConfig.Audience = appSettings.Host;
+                jwtConfig.Authority = appSettings.Host;
 
 
                 jwtConfig.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    RequireExpirationTime = true,
+                    RequireSignedTokens = true              
 
                 };
 
@@ -86,6 +94,18 @@ namespace Auth.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            //Initialize AutoMapper
+            AutoMapper.Mapper.Initialize(options =>
+            {
+                //Users
+                options.CreateMap<UnicornUser, AuthAPIUser>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(x => x.Id))
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(x => x.Username))
+                .ForMember(dest => dest.Role, opt => opt.MapFrom(x => x.Role));
+
+
+            });
 
 
             _context.SeedUsers();
