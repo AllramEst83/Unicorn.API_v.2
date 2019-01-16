@@ -6,12 +6,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="React.Unicorn.App\.eslintrc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="React.Unicorn.App\.eslintrc" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="React.App.Redux.Starter\" />
+    <Folder Include="React.Unicorn.App\src\" />
   </ItemGroup>
 
 </Project>
